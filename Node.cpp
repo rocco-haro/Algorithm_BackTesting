@@ -8,7 +8,7 @@
 #include "Node.h"
 #include <stdlib.h>
 
-Node::Node() : stockPrice(0.0), timeStamp(nullptr), next(nullptr) {}
+Node::Node() : valueInMonies(0.0), timeStamp(nullptr), next(nullptr), pos(0) {}
 
 Node::~Node()
 {
@@ -18,9 +18,10 @@ Node::~Node()
 
 Node::Node(double priceIn, fakeTime* timeIn)
 {
-	stockPrice = priceIn;
+	valueInMonies = priceIn;
 	timeStamp = timeIn;
 	next = nullptr;
+	pos = 0;
 }
 
 void Node::setNext(Node* nextIn)
@@ -28,11 +29,18 @@ void Node::setNext(Node* nextIn)
 	next = nextIn;
 }
 
+void Node::setPos(int posIn)
+{
+	pos = posIn;
+}
+
+int Node::getPos() { return pos; }
+
 Node* Node::getNext()
 {
 	return next;
 }
 
-double Node::getPrice() { return stockPrice; }
+double Node::getPrice() { return valueInMonies; }
 
 fakeTime* Node::getTime() { return timeStamp; }

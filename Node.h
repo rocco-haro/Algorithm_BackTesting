@@ -16,17 +16,19 @@ public:
 	Node(double priceIn, fakeTime* timeIn);
 
 	void setNext(Node* nextIn);
+	void setPos(int posIn);
 	Node* getNext();
 
 	double getPrice();
 	fakeTime* getTime();
-
+	int getPos();
 	~Node();
 
 private:
-	double stockPrice;
+	double valueInMonies;
 	fakeTime* timeStamp;
 	Node* next;
+	int pos;
 };
 
 #endif /* NODE_H_ */

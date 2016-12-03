@@ -9,6 +9,8 @@
 #define RESULTS_H_
 #include "Queue.h"
 #include "GraphAttributes.h"
+#include "LList.h"
+
 class Results {
 public:
 	Results();
@@ -29,7 +31,8 @@ public:
 	void incrementDistributionAt(int position);
 
 	GraphAttributes* getAttributesForPerfVsPrice();
-
+	void addToPerfVsPrice(int pos, double data);
+	void setUpPerfVsPrice();
 
 	void setMin(double minIn);
 	void setMax(double maxIn);
@@ -56,7 +59,7 @@ private:
 	int distribution[40]; // holds all performance values
 	GraphAttributes* parametersForDistr;
 
-	int perfomanceVsPrice[40];
+	LList performanceVsPrice[40];
 	GraphAttributes* parametersForPerfVsPrice;
 
 	int volatilityFactor; // TODO Calculate a volatility factor

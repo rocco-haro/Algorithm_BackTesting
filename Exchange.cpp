@@ -296,7 +296,7 @@ Results Exchange::getFitness(int savingFact, double startMon)
 	}
 	//sim.startSim(10,40);
 	double sum=0;
-	int min, max, interval, positionToIncrement; min=max=interval=0;
+	int min, max, interval, intervalPrice, positionToIncrement; min=max=interval=0;
 
 	// Processing for performance distribution
 	cout << "Pre flooring " << min_max.getMin() << endl;
@@ -319,7 +319,10 @@ Results Exchange::getFitness(int savingFact, double startMon)
 	minPrice = floor(minPrice/10)*10;
 	maxPrice = ceil(maxPrice/10)*10+10;
 	cout << "Min: " << minPrice << endl << "Max: " << maxPrice << endl;
-		// min_max.getAttributesForPerfVsPrice()->setMin(min)
+	intervalPrice = (maxPrice-minPrice)/40;
+	min_max.getAttributesForPerfVsPrice()->setMin(minPrice);
+	min_max.getAttributesForPerfVsPrice()->setMax(maxPrice);
+	min_max.getAttributesForPerfVsPrice()->setInterval(intervalPrice);
 
 	for (int j=0; j < getExp()->getNumTests(); j++ )
 	{

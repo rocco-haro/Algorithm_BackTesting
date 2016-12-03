@@ -57,6 +57,7 @@ int main()
 	cout << "interval - " << data.getAttributesForDistr()->getInterval() << endl;
 	// Only access the distrubtion graph if it is one of the chosen individuals
 	// from the population
+	/*
 	int num=0;
 	int range = data.getAttributesForDistr()->getMin();
 	for (int j=0; j < 40; j++)
@@ -69,6 +70,8 @@ int main()
 		cout << endl;
 	}
 	delete temp;
+	*/
+
 	//tempF = temp->getFitness(20,5,10);
 	//	cout << "Fitness: " << tempF << endl;
 	return 0;
