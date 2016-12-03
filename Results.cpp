@@ -10,15 +10,16 @@
 Results::Results() :  stockFinalPrice(0), money(0), assets(0),
 						savings(0), numStocks(0) , minPerf(0), maxPerf(0)
 							{setUpDistributionSet(); parametersForDistr=new GraphAttributes();
-								parametersForPerfVsPrice=new GraphAttributes();}
+								parametersForPerfVsPrice=new GraphAttributes();
+									setUpPerfVsPrice(); }
 
 Results::Results(Queue life, double price, double moneyIn, double assetsIn,
 					double savingsIn, double numS) :
 						lifeCycle(life), stockFinalPrice(price), money(moneyIn),
 							assets(assetsIn), savings(savingsIn), numStocks(numS),
 								minPerf(0), maxPerf(0) {setUpDistributionSet();
-								parametersForDistr=new GraphAttributes();
-								parametersForPerfVsPrice=new GraphAttributes();}
+								parametersForDistr=new GraphAttributes(); setUpPerfVsPrice();
+									parametersForPerfVsPrice=new GraphAttributes();}
 
 Queue Results::getLifeCycle() { return lifeCycle; }
 
@@ -65,6 +66,15 @@ void Results::setUpDistributionSet()
 	for (int j=0; j < 40; j++)
 	{
 		distribution[j]=0;
+	}
+}
+
+void Results::setUpPerfVsPrice()
+{
+	LList initializer;
+	for (int j=0; j < 40; j++)
+	{
+		performanceVsPrice[j] = initializer;
 	}
 }
 
