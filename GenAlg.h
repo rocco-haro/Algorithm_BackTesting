@@ -7,7 +7,7 @@
 
 #ifndef GENALG_H_
 #define GENALG_H_
-
+#include "Population.h"
 class GenAlg {
 };
 
