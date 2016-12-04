@@ -321,15 +321,12 @@ Results Exchange::getFitness(int savingFact, double startMon)
 	minPrice = floor(minPrice/10)*10;
 	maxPrice = ceil(maxPrice/10)*10+10;
 	cout << "Min: " << minPrice << endl << "Max: " << maxPrice << endl;
-<<<<<<< HEAD
-		// min_max.getAttributesForPerfVsPrice()->setMin(min)
-=======
+
 	intervalPrice = (maxPrice-minPrice)/40;
 	cout << "Interval: " << interval << endl;
 	min_max.getAttributesForPerfVsPrice()->setMin(minPrice);
 	min_max.getAttributesForPerfVsPrice()->setMax(maxPrice);
 	min_max.getAttributesForPerfVsPrice()->setInterval(intervalPrice);
->>>>>>> origin/master
 
 	for (int j=0; j < getExp()->getNumTests(); j++ )
 	{
