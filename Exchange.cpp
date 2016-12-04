@@ -296,7 +296,7 @@ Results Exchange::getFitness(int savingFact, double startMon)
 	}
 	//sim.startSim(10,40);
 	double sum=0;
-	int min, max, interval, intervalPrice, positionToIncrement; min=max=interval=0;
+	int min, max, interval, positionToIncrement; min=max=interval=0;
 
 	// Processing for performance distribution
 	cout << "Pre flooring " << min_max.getMin() << endl;
@@ -319,10 +319,7 @@ Results Exchange::getFitness(int savingFact, double startMon)
 	minPrice = floor(minPrice/10)*10;
 	maxPrice = ceil(maxPrice/10)*10+10;
 	cout << "Min: " << minPrice << endl << "Max: " << maxPrice << endl;
-	intervalPrice = (maxPrice-minPrice)/40;
-	min_max.getAttributesForPerfVsPrice()->setMin(minPrice);
-	min_max.getAttributesForPerfVsPrice()->setMax(maxPrice);
-	min_max.getAttributesForPerfVsPrice()->setInterval(intervalPrice);
+		// min_max.getAttributesForPerfVsPrice()->setMin(min)
 
 	for (int j=0; j < getExp()->getNumTests(); j++ )
 	{
@@ -361,26 +358,33 @@ Results Exchange::getFitness(int savingFact, double startMon)
 	return min_max;
 }
 
+void Exchange::CSVExport(Results data[])
+{
+	// Gives us the number of elements of type Results in the array "data"
+	int numberOfTrials = sizeof(data) / sizeof(data[0]);
+	ofstream Data_File ("myStockSimulationData.csv");
+	Data_File << "Stock Final Price,Stock Total Value,Money,Assets,Savings,Number of Stocks, Minimum Performance, Maximum Performance";
+	for (int i = 1, i <= numberOfTrials, i++)
+	{
+		Data_File << ",Trial " + (i);
+	}
 
+	Data_File << "\n";
 
+	for (i = 0, i < numberOfTrials; i++)
+	{
+		Data_File << data[i].getFinalPrice() << "," << data[i].getTotalValue() << "," << data[i].getMoney() 
+		<< "," << data[i].getAssets() << "," << data[i].getSavings() << "," << data[i].getNumStocks() << ","
+		<< data[i].getMin() << "," << data[i].getMax();
 
+		if (!data[0].getLifeCycle().isEmpty())
+		{
+			for (int j = 0, j < numberOfTrials; j++)
+			{
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+				Data_File << "," << data[j].getLifeCycle().dequeue().getPrice();
+			}
+		}
+		Data_File << "\n";
+	}
+}

@@ -29,7 +29,7 @@ int main()
 	// the type of moving averge 'D' (day) 'H' (hour) 'M' (min),
 	// and the number of experiments
 
-	Exchange* temp = new Exchange(10,40,'A',10);
+	Exchange* temp = new Exchange(10,40,'A',5);
 	Results data;
 	cout <<"Done .1.." << endl;
 
