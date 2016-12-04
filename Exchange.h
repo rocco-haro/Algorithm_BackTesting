@@ -38,6 +38,7 @@ public:
 	double getPrice();
 	double getMovingAvg(Queue data);
 	fakeTime* getTime();
+	void CSVExport(Results data[]);					// New Function for CSV File Export
 private:
 
 	ExperimentType* exp;
