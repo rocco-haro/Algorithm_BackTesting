@@ -299,10 +299,10 @@ Results Exchange::getFitness(int savingFact, double startMon)
 	int min, max, interval, positionToIncrement; min=max=interval=0;
 
 	// Processing for performance distribution
-	cout << "Pre flooring " << min_max.getMin() << endl;
-	cout << "Pre ceiling " << min_max.getMax() << endl;
+//	cout << "Pre flooring " << min_max.getMin() << endl;
+//	cout << "Pre ceiling " << min_max.getMax() << endl;
 	min = floor( ((int)min_max.getMin()) / 100 )*100;
-	cout << "Min: " << min << endl;
+//	cout << "Min: " << min << endl;
 	max = ceil( (int)min_max.getMax()/100)*100 + 100;
 	cout << "Max: " << max << endl;
 	interval = (max - min)/40;
@@ -314,12 +314,22 @@ Results Exchange::getFitness(int savingFact, double startMon)
 	cout << "Interval: " << interval << endl;
 
 	// processing for stock price vs. perfomance relation
+	// NOTE : min, max, and interval for the price vs performance is denoted
+	// with the word "Price" appended to the variable name
 	cout << "------ Stock price vs Performance " << endl;
 	cout << "Min: " << minPrice << endl << "Max: " << maxPrice << endl;
 	minPrice = floor(minPrice/10)*10;
 	maxPrice = ceil(maxPrice/10)*10+10;
 	cout << "Min: " << minPrice << endl << "Max: " << maxPrice << endl;
+<<<<<<< HEAD
 		// min_max.getAttributesForPerfVsPrice()->setMin(min)
+=======
+	intervalPrice = (maxPrice-minPrice)/40;
+	cout << "Interval: " << interval << endl;
+	min_max.getAttributesForPerfVsPrice()->setMin(minPrice);
+	min_max.getAttributesForPerfVsPrice()->setMax(maxPrice);
+	min_max.getAttributesForPerfVsPrice()->setInterval(intervalPrice);
+>>>>>>> origin/master
 
 	for (int j=0; j < getExp()->getNumTests(); j++ )
 	{
@@ -333,6 +343,8 @@ Results Exchange::getFitness(int savingFact, double startMon)
 		//cout << "Postion to increment: " << positionToIncrement << endl;
 		min_max.incrementDistributionAt(positionToIncrement);
 
+		positionToIncrement = getCorrespondingPosition(data[j].getFinalPrice(), intervalPrice, minPrice);
+		min_max.addToPerfVsPrice(positionToIncrement, data[j].getTotalValue());
 		// TODO
 		// Write all of the stock lifecycles to a file by outputting each queue
 

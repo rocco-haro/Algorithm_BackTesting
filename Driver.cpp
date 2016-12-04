@@ -50,15 +50,17 @@ int main()
 
 
 	cout <<"Done .2.." << endl;
-	cout << "Fitness: " << data.getTotalValue() << endl;
+	cout << "Fitness: " << data.getTotalValue() << endl; // access the fitness value
+
 	cout << "Min: " << data.getMin() << " | Max: " << data.getMax() << endl;
 
-	cout << "Graph attr: min - " << data.getAttributesForDistr()->getMin() << " max - " << data.getAttributesForDistr()->getMax() << " ";
-	cout << "interval - " << data.getAttributesForDistr()->getInterval() << endl;
+//	cout << "Graph attr: min - " << data.getAttributesForDistr()->getMin() << " max - " << data.getAttributesForDistr()->getMax() << " ";
+//	cout << "interval - " << data.getAttributesForDistr()->getInterval() << endl;
 	// Only access the distrubtion graph if it is one of the chosen individuals
 	// from the population
 	/*
 	int num=0;
+	cout << "Distribution performance " << endl;
 	int range = data.getAttributesForDistr()->getMin();
 	for (int j=0; j < 40; j++)
 	{
@@ -69,8 +71,33 @@ int main()
 		printX(num);
 		cout << endl;
 	}
-	delete temp;
+	//delete temp;
 	*/
+	cout << "+++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
+
+	/*
+	cout << "Graph Perf-vs-Price attr: min - " << data.getAttributesForPerfVsPrice()->getMin() << " max - " << data.getAttributesForPerfVsPrice()->getMax() << " ";
+	cout << "interval - " << data.getAttributesForPerfVsPrice()->getInterval() << endl;
+	int range1 =data.getAttributesForPerfVsPrice()->getMin();
+
+	for (int k=0; k < 40; k++)
+	{
+		cout << range1 << " - ";
+		range1+=data.getAttributesForPerfVsPrice()->getInterval();
+		cout << range1 << " : ";
+
+		for (int p=0; p < data.getSizeOfListAt(k); p++ )
+		{
+			cout << " " << data.getListAt_PositionAt(k,p) << " ";
+		}
+		cout << endl;
+	}
+
+	*/
+
+
+
+
 
 	//tempF = temp->getFitness(20,5,10);
 	//	cout << "Fitness: " << tempF << endl;

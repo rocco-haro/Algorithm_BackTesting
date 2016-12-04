@@ -37,7 +37,7 @@ void LList::add(double dataIn)
 
 double LList::getDataAt(int pos)
 {
-	if (pos < 0 || pos > getSize()) { return -100; } // out of bounds access
+	if (pos < 0 && pos > getSize()) { return -100; } // out of bounds access
 	else
 	{
 		bool done = false;

@@ -31,6 +31,8 @@ public:
 	void incrementDistributionAt(int position);
 
 	GraphAttributes* getAttributesForPerfVsPrice();
+	double getListAt_PositionAt(int positionInArr, int posInLList);
+	int getSizeOfListAt(int pos);
 	void addToPerfVsPrice(int pos, double data);
 	void setUpPerfVsPrice();
 
@@ -59,7 +61,7 @@ private:
 	int distribution[40]; // holds all performance values
 	GraphAttributes* parametersForDistr;
 
-	LList performanceVsPrice[40];
+	LList* performanceVsPrice[40];
 	GraphAttributes* parametersForPerfVsPrice;
 
 	int volatilityFactor; // TODO Calculate a volatility factor
