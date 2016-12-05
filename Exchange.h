@@ -13,6 +13,7 @@
 #include "ExperimentType.h"
 #include "Results.h"
 #include "Bot.h"
+#include <fstream>
 #include <time.h>
 #include <pthread.h>
 using namespace std;
@@ -27,6 +28,7 @@ public:
 	Results getFitness(int savingFact, double startMon); // change to return a "Result" object
 	void printByDay();
 	void tick(bool pass);
+	void CSVExport(Results data[], int size);
 	ExperimentType* getExp();
 
 	int getCorrespondingPosition(double portfolioVal, int interval, int min); // O(1) !!!!!!!!!!!!!!!!!!!!!!!!!!

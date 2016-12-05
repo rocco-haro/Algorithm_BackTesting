@@ -64,8 +64,7 @@ void Bot::checkForBuySignal(double currPrice)
 		if(getMonies() > currPrice) // can afford?
 		{
 			int monInt = (int) getMonies();
-			int price = (int) currPrice;
-			updateNumStocks(floor(monInt/price)-1);
+			int price = (int) currPrice;updateNumStocks(floor(monInt/price)-1);
 
 			updateMonies(getMonies()-(getNumStocks()*currPrice));
 			updateAssets(getAssets() +(getNumStocks()*currPrice));

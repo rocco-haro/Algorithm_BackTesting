@@ -14,9 +14,9 @@
 class Results {
 public:
 	Results();
-	Results(Queue life, double price, double moneyIn, double assetsIn, double savingsIn, double numS);
+	Results(Queue* life, double price, double moneyIn, double assetsIn, double savingsIn, double numS);
 
-	Queue getLifeCycle();
+	Queue* getLifeCycle();
 	double getTotalValue();
 	double getFinalPrice();
 	double getMoney();
@@ -31,6 +31,8 @@ public:
 	void incrementDistributionAt(int position);
 
 	GraphAttributes* getAttributesForPerfVsPrice();
+	double getListAt_PositionAt(int positionInArr, int posInLList);
+	int getSizeOfListAt(int pos);
 	void addToPerfVsPrice(int pos, double data);
 	void setUpPerfVsPrice();
 
@@ -45,7 +47,7 @@ private:
 	void setUpDistributionSet();
 
 	// Possibly hold the life cycle
-	Queue lifeCycle;
+	Queue* lifeCycle;
 	double stockFinalPrice;
 	double totalValue;
 	double money;
@@ -59,7 +61,7 @@ private:
 	int distribution[40]; // holds all performance values
 	GraphAttributes* parametersForDistr;
 
-	LList performanceVsPrice[40];
+	LList* performanceVsPrice[40];
 	GraphAttributes* parametersForPerfVsPrice;
 
 	int volatilityFactor; // TODO Calculate a volatility factor
