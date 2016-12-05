@@ -8,6 +8,8 @@
 #ifndef BOT_H_
 #define BOT_H_
 #include <cmath>
+#include <iostream>
+using namespace std;
 class Bot {
 public:
 	Bot();
