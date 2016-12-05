@@ -69,13 +69,38 @@ void Results::setUpDistributionSet()
 	}
 }
 
+void Results::addToPerfVsPrice(int pos, double data)
+{
+	if (pos < 0 && pos > 40)
+	{
+		cout << "Error: Invalid location to add to Performance vs. Price" << endl;
+	}
+	else
+	{
+		performanceVsPrice[pos]->add(data);
+	}
+}
+
 void Results::setUpPerfVsPrice()
 {
-	LList initializer;
 	for (int j=0; j < 40; j++)
 	{
-		performanceVsPrice[j] = initializer;
+		performanceVsPrice[j] = new LList();
 	}
+}
+
+double Results::getListAt_PositionAt(int positionInArr, int posInLList)
+{
+	if (positionInArr >= 0 && positionInArr < 40)
+	{
+	return performanceVsPrice[positionInArr]->getDataAt(posInLList);
+	}
+	else { return -200; } // error
+}
+
+int Results::getSizeOfListAt(int pos)
+{
+	return performanceVsPrice[pos]->getSize();
 }
 
 GraphAttributes* Results::getAttributesForDistr() { return parametersForDistr; }
