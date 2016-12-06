@@ -163,9 +163,9 @@ ExperimentType* Exchange::getExp() { return exp; }
 
 int Exchange::getCorrespondingPosition(double portfolioVal, int interval, int min)
 {
-	cout << "Value: " << portfolioVal << " Min: " << min << endl;
-	cout << "Subtract: " << portfolioVal-min << endl;
-	cout << "Interval: " << interval << endl;
+	//cout << "Value: " << portfolioVal << " Min: " << min << endl;
+	//cout << "Subtract: " << portfolioVal-min << endl;
+	//cout << "Interval: " << interval << endl;
 	return floor( ( ((int) portfolioVal) - min ) / interval );
 }
 
@@ -279,6 +279,7 @@ Results Exchange::getFitness(int savingFact, double startMon)
 		//cout << "working..." << endl;
 
 		// Store result from startSim in array()
+		cout << "Trial# " << count << endl;
 		data[count] = sim->startSim();
 		//cout << "Value stored: " << data[count].getTotalValue() << endl;
 		if (data[count].getTotalValue() < min_max.getMin()) { min_max.setMin(data[count].getTotalValue()); }
@@ -344,7 +345,7 @@ Results Exchange::getFitness(int savingFact, double startMon)
 		min_max.incrementDistributionAt(positionToIncrement);
 
 		positionToIncrement = getCorrespondingPosition(data[j].getFinalPrice(), intervalPrice, minPrice);
-		cout << "Position to increment: " << positionToIncrement << endl;
+		//cout << "Position to increment: " << positionToIncrement << endl;
 		if (positionToIncrement >= 40) { cout << "Error in getFitness() -- position to increment too high" << endl; }
 		else
 		{
@@ -363,6 +364,8 @@ Results Exchange::getFitness(int savingFact, double startMon)
 	//TODO
 	// update to subtract by the amount of starting money, getExp().getStartingMonies()
 	double fit = (sum/(double)getExp()->getNumTests() - startMon);
+
+
 	//TODO
 	// solve for a more intricate way of calculating the fitness score for perfomance
 	cout << "F: " << fit << endl;
@@ -373,7 +376,7 @@ Results Exchange::getFitness(int savingFact, double startMon)
 	//Results* datatemp[getExp()->getNumTests()];
 	//*datatemp = data;
 
-	CSVExport(data, getExp()->getNumTests());
+	//CSVExport(data, getExp()->getNumTests());
 
 
 	return min_max;
@@ -388,7 +391,7 @@ void Exchange::CSVExport(Results data[], int size)
 	bool done = false;
 	cout << "Number of trials: " << size << endl;
 	ofstream Data_File;
-	Data_File.open("myStockSimulationData.csv");
+	Data_File.open("StockPriceLifeTimes.csv");
 	if (Data_File.is_open())
 	{
 		cout << "Reading file " << endl;
@@ -442,23 +445,40 @@ void Exchange::CSVExport(Results data[], int size)
 	}
 	Data_File.close();
 
+
+
+
+	/*
+	 *  Now writing the Performance vs. Stock price data
+	 *
+
+	Data_File.open("PerformanceVsPriceData.csv");
+	if (Data_File.is_open())
+	{
+		cout << "Reading file " << endl;
+	}
+	else
+	{
+		cout << "Error: could not read file " << endl;
+	}
 	cout << "Graph Perf-vs-Price attr: min - " << data[size].getAttributesForPerfVsPrice()->getMin() << " max - " << data[size].getAttributesForPerfVsPrice()->getMax() << " ";
 	cout << "interval - " << data[size].getAttributesForPerfVsPrice()->getInterval() << endl;
 	int range1 =data[size].getAttributesForPerfVsPrice()->getMin();
 
 	for (int k=0; k < 40; k++)
 	{
-		//cout << range1 << " - ";
+		Data_File << range1 << "-";
 		range1+=data[size].getAttributesForPerfVsPrice()->getInterval();
-		cout << range1 << " : ";
+		Data_File << range1 << "";
 
 		for (int p=0; p < data[size].getSizeOfListAt(k); p++ )
 		{
-			cout << " " << data[size].getListAt_PositionAt(k,p) << " ";
+			Data_File << "," << data[size].getListAt_PositionAt(k,p);
 		}
-		cout << endl;
+		Data_File << "\n";
 	}
 
+		*/
 }
 
 

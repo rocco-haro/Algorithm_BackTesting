@@ -7,7 +7,10 @@
 
 #include "Individual.h"
 
-Individual::Individual() : fitnessValue(1) { setUpAttributes(); }
+Individual::Individual() : fitnessValue(1), startMonies(10000),
+ 														numExperiments(100) { setUpAttributes(); }
+
+
 
 void Individual::setUpAttributes()
 {
@@ -25,6 +28,31 @@ void Individual::setAttributeAt( int pos, double setThis)
 
 void Individual::setFitnessValue(double newFit) { fitnessValue = newFit; }
 
-double Individual::getFitnessValue() { return fitnessValue; }
+void Individual::runFitnessAlg()
+{
+
+	// set the fitness value returned from exchange
+	Exchange * exch = new Exchange(getAttributeAt(0), getAttributeAt(1), 'A', getExp());
+	resultsFromExp = exch->getFitness(getAttributeAt(2), getStartingMonies());
+
+	setFitnessValue(resultsFromExp.getTotalValue());
+	delete exch;
+
+}
+
+void Individual::setExp(int in) { numExperiments = in; }
+
+void Individual::setMon(double in ) { startMonies = in; }
+
+int Individual::getExp() { return numExperiments; }
+
+double Individual::getStartingMonies() { return startMonies; }
+
+double Individual::getFitnessValue()
+{
+	return fitnessValue;
+}
 
 double Individual::getAttributeAt(int pos) { return attributes[pos]; }
+
+Results Individual::getResults() { return resultsFromExp; }

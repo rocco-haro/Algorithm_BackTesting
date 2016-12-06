@@ -8,7 +8,16 @@
 #ifndef GENALG_H_
 #define GENALG_H_
 #include "Population.h"
+#include "Exchange.h"
+
 class GenAlg {
+public:
+	GenAlg();
+	void runGA(double startingMon); // Initial starting monies
+
+private:
+	Population* population;
+
 };
 
 

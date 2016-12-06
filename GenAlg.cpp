@@ -8,10 +8,15 @@
 #include "GenAlg.h"
 
 /*
-runGA(population , exchange)
+ *
+ * startingMoney must be p
+runGA(startingMon, numExp) // be sure to implement the GA as a multithread but storing start monies
+					// in an array
+
 {
 	repeat
 		newPop = {}
+		pop.runIndividualFitnessAlg(startingMon);
 		for (i=1 to population.size())
 		{
 			father = randomSelect(population, exchange);
