@@ -10,6 +10,16 @@
 Population::Population()
 {
 	setGen();
+	srand(time(NULL));
+	numExperiments=1;
+}
+
+Population::Population(double setMonies, int numExp)
+{
+	setGen();
+	srand(time(NULL));
+	startMonies = setMonies;
+	numExperiments = numExp;
 }
 
 Population::~Population()
@@ -21,6 +31,23 @@ Population::~Population()
 		}
 }
 
+void Population::copy(Population thisPop)
+{
+	for (int k = 0; k < getSize(); k++)
+	{
+		addChildToPos(k, *thisPop.getIndividualAt(k));
+	}
+}
+
+void Population::resetGen()
+{
+	for (int j=0; j < getSize(); j++)
+	{
+		delete Gen0[j];
+		Gen0[j] = new Individual();
+	}
+}
+
 void Population::setGen()
 {
 	for (int j=0; j < getSize(); j++)
@@ -30,11 +57,63 @@ void Population::setGen()
 	}
 }
 
+void *individualRun(void *threadArg)
+{
+	//runFitnessAlg
+	Individual* currInd;
+	currInd = (Individual *) threadArg;
+
+	// run experiment
+	currInd->runFitnessAlg();
+
+
+}
+
+void Population::runIndividualFitnessAlgorithm()
+{
+	// Set this up to run as a thread
+
+	// Use startMonies in this class to initiliaze the amount of starting money
+	// do runFitnessAlg(int numExp) for each individual
+
+	const int NUM_THREADS = 10; // change for a larger population
+	pthread_t threads[NUM_THREADS];
+	int errorCatch;
+
+
+	//non-threading
+	for (int j=0; j < 50; j++) ///////////////////////////////////////////////////////////// change Size here
+	{
+		cout << "Running individual# " << j << endl;
+		Gen0[j]->setMon(getStartingMonies());
+		Gen0[j]->setExp(getNumExp());
+		Gen0[j]->runFitnessAlg();
+	}
+
+/*
+	for (int j=0; j < NUM_THREADS; j++)
+	{
+		Gen0[j]->setMon(getStartingMonies());
+		Gen0[j]->setExp(getNumExp());
+		errorCatch = pthread_create(&threads[j], NULL, individualRun, (void*)Gen0[j]);
+		if (errorCatch) { cout << "Error in thread " << errorCatch << endl; exit(-1); }
+
+	}
+
+	// Wait for threads to finish
+	for(int L=0; L < NUM_THREADS; L++)
+	{
+	pthread_join(threads[L],NULL);
+	}
+*/
+}
+
+
 void Population::generateGeneration0()
 {
 	// moving averages can vary from 1 - 200 days
 	// saving factor can vary from 50 - 5000
-	srand(time(NULL));
+	//srand(time(NULL));
 	double mov1, mov2, savingFactor;
 	for(int k=0; k < getSize(); k++)
 	{
@@ -56,22 +135,34 @@ void Population::printPop()
 	{
 		cout << k << " : Moving1 = " << Gen0[k]->getAttributeAt(0) << " ";
 		cout << "Moving2 = " << Gen0[k]->getAttributeAt(1) << " ";
-		cout << "Saving Factor = " << Gen0[k]->getAttributeAt(2) << endl;
+		cout << "Saving Factor = " << Gen0[k]->getAttributeAt(2);
+		cout << " Fitness: " << Gen0[k]->getFitnessValue() << endl;
 	}
 }
 
+Individual* Population::getIndividualAt(int pos)
+{
+	return Gen0[pos];
+}
 void Population::addChildToPos(int pos, Individual thisChild)
 {
-	// Be sure to deallocate the memory of that position !!!!!!!!!!!!!!!!!!!!!!!!
 
+	//delete Gen0[pos];
+	for (int k=0; k < 3; k++)
+	{
+		double value =  thisChild.getAttributeAt(k);
+		Gen0[pos]->setAttributeAt(k, value);
+	}
 }
 
 int Population::getSize() { return sizeOfPop; }
 
+int Population::getNumExp() { return numExperiments; }
+
 Individual Population::randomlySelectFromPop()
 {
 	// build roullete wheel based off of their fitness values
-	srand(time(NULL));
+	//srand(time(NULL));
 	double randNum = 0; // random number from 0 - 1
 	randNum = ((double) rand() /  (RAND_MAX));
 
@@ -113,7 +204,7 @@ Individual Population::randomlySelectFromPop()
 
 Individual Population::reproduce(Individual father, Individual mother)
 {
-	srand(time(NULL));
+	//srand(time(NULL));
 	int chooseFromFatherOrMother = ( rand() % 2) + 1;
 	int numAttributesToCopy = ( rand() % 2) + 1;
 	int whichAttributeToCopy1 = ( rand() % 3) + 1;
@@ -129,61 +220,107 @@ Individual Population::reproduce(Individual father, Individual mother)
 
 	if (chooseFromFatherOrMother == 1) // get attributes from mother first
 	{
+		//cout << "Choosing from mother first..." << endl;
 		if (numAttributesToCopy == 2)
 		{
-			if (whichAttributeToCopy1 == 1) { childMov1 = mother.getAttributeAt(1); }
-			else if (whichAttributeToCopy1 == 2) { childMov2 = mother.getAttributeAt(2); }
-			else { childSavingFactor = mother.getAttributeAt(3); }
-
-			if (whichAttributeToCopy2 == 1) { childMov1 = mother.getAttributeAt(1); }
-			else if (whichAttributeToCopy2 == 2) { childMov2 = mother.getAttributeAt(2); }
-			else { childSavingFactor = mother.getAttributeAt(3); }
+	//		cout << "Copying attr1: " << whichAttributeToCopy1 << endl;
+			if (whichAttributeToCopy1 == 1) { childMov1 = mother.getAttributeAt(0); }
+			else if (whichAttributeToCopy1 == 2) { childMov2 = mother.getAttributeAt(1); }
+			else { childSavingFactor = mother.getAttributeAt(2); }
+//			cout << "Copying attr2: " << whichAttributeToCopy2 << endl;
+			if (whichAttributeToCopy2 == 1) { childMov1 = mother.getAttributeAt(0); }
+			else if (whichAttributeToCopy2 == 2) { childMov2 = mother.getAttributeAt(1); }
+			else { childSavingFactor = mother.getAttributeAt(2); }
 
 		}
 		else
 		{
-			if (whichAttributeToCopy1 == 1) { childMov1 = mother.getAttributeAt(1); }
-			else if (whichAttributeToCopy1 == 2) { childMov2 = mother.getAttributeAt(2); }
-			else { childSavingFactor = mother.getAttributeAt(3); }
+//			cout << "Copying attr1: " << whichAttributeToCopy1 << endl;
+			if (whichAttributeToCopy1 == 1) { childMov1 = mother.getAttributeAt(0); }
+			else if (whichAttributeToCopy1 == 2) { childMov2 = mother.getAttributeAt(1); }
+			else { childSavingFactor = mother.getAttributeAt(2); }
 		}
 
 		// Identify which attribute has not yet been inherited and get from father
-		if (childMov1 == -1) { childMov1 = father.getAttributeAt(1); }
-		if (childMov2 == -1) { childMov2 = father.getAttributeAt(2); }
-		if (childSavingFactor == -1) { childSavingFactor = father.getAttributeAt(3); }
+		if (childMov1 == -1) { childMov1 = father.getAttributeAt(0); }
+		if (childMov2 == -1) { childMov2 = father.getAttributeAt(1); }
+		if (childSavingFactor == -1) { childSavingFactor = father.getAttributeAt(2); }
 
 	}
-	else // get attributes from mother
+	else // get attributes from father
 	{
+//		cout << "Choosing from Father first..." << endl;
 		if (numAttributesToCopy == 2)
 		{
-			if (whichAttributeToCopy1 == 1) { childMov1 = father.getAttributeAt(1); }
-			else if (whichAttributeToCopy1 == 2) { childMov2 = father.getAttributeAt(2); }
-			else { childSavingFactor = father.getAttributeAt(3); }
+//			cout << "Copying attr1: " << whichAttributeToCopy1 << endl;
+			if (whichAttributeToCopy1 == 1) { childMov1 = father.getAttributeAt(0); }
+			else if (whichAttributeToCopy1 == 2) { childMov2 = father.getAttributeAt(1); }
+			else { childSavingFactor = father.getAttributeAt(2); }
 
-			if (whichAttributeToCopy2 == 1) { childMov1 = father.getAttributeAt(1); }
-			else if (whichAttributeToCopy2 == 2) { childMov2 = father.getAttributeAt(2); }
-			else { childSavingFactor = father.getAttributeAt(3); }
+//			cout << "Copying attr2: " << whichAttributeToCopy2 << endl;
+			if (whichAttributeToCopy2 == 1) { childMov1 = father.getAttributeAt(0); }
+			else if (whichAttributeToCopy2 == 2) { childMov2 = father.getAttributeAt(1); }
+			else { childSavingFactor = father.getAttributeAt(2); }
 
 		}
 		else
 		{
-			if (whichAttributeToCopy1 == 1) { childMov1 = father.getAttributeAt(1); }
-			else if (whichAttributeToCopy1 == 2) { childMov2 = father.getAttributeAt(2); }
-			else { childSavingFactor = father.getAttributeAt(3); }
+////			cout << "Copying attr1: " << whichAttributeToCopy1 << endl;
+			if (whichAttributeToCopy1 == 1) { childMov1 = father.getAttributeAt(0); }
+			else if (whichAttributeToCopy1 == 2) { childMov2 = father.getAttributeAt(1); }
+			else { childSavingFactor = father.getAttributeAt(2); }
 		}
 
 		// Identify which attribute has not yet been inherited and get from Mother
-		if (childMov1 == -1) { childMov1 = mother.getAttributeAt(1); }
-		if (childMov2 == -1) { childMov2 = mother.getAttributeAt(2); }
-		if (childSavingFactor == -1) { childSavingFactor = mother.getAttributeAt(3); }
+		if (childMov1 == -1) { childMov1 = mother.getAttributeAt(0); }
+		if (childMov2 == -1) { childMov2 = mother.getAttributeAt(1); }
+		if (childSavingFactor == -1) { childSavingFactor = mother.getAttributeAt(2); }
 	}
+//	cout << "Done reproducing" << endl;
 
 	Individual child; child.setAttributeAt(0, childMov1); child.setAttributeAt(1, childMov2);
-	child.setAttributeAt(2, childSavingFactor);
+	child.setAttributeAt(2, childSavingFactor); child.setFitnessValue(1);
 	return child;
 
 }
+
+Individual Population::mutate(Individual preMutant)
+{
+	int geneToMutate = (rand() % 3) +1;
+	int	mov1 = (rand()%200) +1;
+	int mov2 = (rand()%200) +1;
+	int savingFactor = (rand()%4950) +50;
+	if(geneToMutate == 1)
+	{
+		preMutant.setAttributeAt(0, mov1);
+	}
+	else if (geneToMutate == 2)
+	{
+		preMutant.setAttributeAt(1, mov2);
+
+	}
+	else
+	{
+		preMutant.setAttributeAt(2,savingFactor );
+	}
+
+	return preMutant;
+}
+
+Individual Population::getHighestIndividual()
+{
+	Individual* best = Gen0[0];
+	for (int k=1; k < getSize(); k++)
+	{
+		if (best->getFitnessValue() < Gen0[k]->getFitnessValue())
+		{
+			best = Gen0[k];
+		}
+	}
+	return *best;
+}
+
+double Population::getStartingMonies() { return startMonies; }
 
 double Population::getTotalFitnessFromPop()
 {
@@ -194,5 +331,3 @@ double Population::getTotalFitnessFromPop()
 	}
 	return sum;
 }
-
-

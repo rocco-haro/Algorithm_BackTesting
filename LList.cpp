@@ -15,6 +15,7 @@ void LList::add(double dataIn)
 	{
 		head = new Node(dataIn, nullptr);
 		head->setPos(0);
+		head->setNext(nullptr);
 	}
 	else
 	{

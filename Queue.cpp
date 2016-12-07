@@ -7,7 +7,7 @@
 
 #include "Queue.h"
 
-Queue::Queue() : first(nullptr), last(nullptr), MAX_SIZE(365), currSize(0) {}
+Queue::Queue() : first(nullptr), last(nullptr), MAX_SIZE(10000), currSize(0) {}
 
 Queue::Queue(int sizeIn) : first(nullptr), last(nullptr), MAX_SIZE(sizeIn), currSize(0) {}
 
@@ -17,6 +17,8 @@ void Queue::enqueue(Node* lastIn)
 	{
 		first = lastIn;
 		last = lastIn;
+
+		currSize++;
 	}
 	else
 	{

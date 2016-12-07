@@ -7,13 +7,13 @@
 
 #include "Results.h"
 
-Results::Results() :  stockFinalPrice(0), money(0), assets(0),
+Results::Results() :  stockFinalPrice(0), money(0), assets(0), lifeCycle(nullptr),
 						savings(0), numStocks(0) , minPerf(0), maxPerf(0)
 							{setUpDistributionSet(); parametersForDistr=new GraphAttributes();
 								parametersForPerfVsPrice=new GraphAttributes();
 									setUpPerfVsPrice(); }
 
-Results::Results(Queue life, double price, double moneyIn, double assetsIn,
+Results::Results(Queue* life, double price, double moneyIn, double assetsIn,
 					double savingsIn, double numS) :
 						lifeCycle(life), stockFinalPrice(price), money(moneyIn),
 							assets(assetsIn), savings(savingsIn), numStocks(numS),
@@ -21,7 +21,7 @@ Results::Results(Queue life, double price, double moneyIn, double assetsIn,
 								parametersForDistr=new GraphAttributes(); setUpPerfVsPrice();
 									parametersForPerfVsPrice=new GraphAttributes();}
 
-Queue Results::getLifeCycle() { return lifeCycle; }
+Queue* Results::getLifeCycle() { return lifeCycle; }
 
 double Results::getTotalValue()
 {

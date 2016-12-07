@@ -14,9 +14,9 @@
 class Results {
 public:
 	Results();
-	Results(Queue life, double price, double moneyIn, double assetsIn, double savingsIn, double numS);
+	Results(Queue* life, double price, double moneyIn, double assetsIn, double savingsIn, double numS);
 
-	Queue getLifeCycle();
+	Queue* getLifeCycle();
 	double getTotalValue();
 	double getFinalPrice();
 	double getMoney();
@@ -47,7 +47,7 @@ private:
 	void setUpDistributionSet();
 
 	// Possibly hold the life cycle
-	Queue lifeCycle;
+	Queue* lifeCycle;
 	double stockFinalPrice;
 	double totalValue;
 	double money;

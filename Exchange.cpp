@@ -47,7 +47,7 @@ Results Exchange::startSim()
 
 	int prevDay=0;
 
-	Queue pricePerDay; // keeps record of all the prices during the
+	Queue* pricePerDay = new Queue(); // keeps record of all the prices during the
 					   // existence of the stock
 
 	while(!yearHasPassed() && !crashed()) // adjust accordingly depending on type of sim
@@ -70,7 +70,8 @@ Results Exchange::startSim()
 			// updates queue for moving averages on a new day
 			if (newDay(prevDay))
 			{
-				pricePerDay.enqueue(new Node(getPrice(), getTime()->copy()));
+
+				pricePerDay->enqueue(new Node(getPrice(), getTime()->copy()));
 				//cout << "Monies: " << monies << " | Assets: " << assets << " | Savings: " << savings << endl;
 
 				trader.updatePPA1(getMovingAvg(days1));
@@ -113,9 +114,9 @@ Results Exchange::startSim()
 
 	}
 
-	/*
-	cout << "Moving1: " << endl;
 
+//	cout << "Moving1: " << endl;
+/*
 	Node *data = days1.dequeue();
 	while(!days1.isEmpty())
 	{
@@ -128,9 +129,10 @@ Results Exchange::startSim()
 		else { cout << "NULL" << endl; }
 		data = days1.dequeue();
 	}
-	cout << "-----------" << endl;
-	cout << "Moving2: " << endl;
-
+*/
+//	cout << "-----------" << endl;
+//	cout << "Moving2: " << endl;
+/*
 	while(!days2.isEmpty())
 	{
 		data = days2.dequeue();
@@ -145,9 +147,9 @@ Results Exchange::startSim()
 	Results experimentRes(pricePerDay, getPrice(), trader.getMonies(), trader.assetCurrVal(getPrice()),
 									trader.getSavings(), trader.getNumStocks());
 	double total = trader.getTotalWorth(getPrice());
-	cout << "Monies: " << trader.getMonies() << " | Assets: " << trader.assetCurrVal(getPrice()) << " | Savings: " << trader.getSavings() << endl;
-	cout << "Ending Price: " << getPrice() << " Total money: " << total << endl;
-	cout << "--------" << endl;
+//	cout << "Monies: " << trader.getMonies() << " | Assets: " << trader.assetCurrVal(getPrice()) << " | Savings: " << trader.getSavings() << endl;
+//	cout << "Ending Price: " << getPrice() << " Total money: " << total << endl;
+//	cout << "--------" << endl;
 	return experimentRes;
 }
 
@@ -161,6 +163,9 @@ ExperimentType* Exchange::getExp() { return exp; }
 
 int Exchange::getCorrespondingPosition(double portfolioVal, int interval, int min)
 {
+	//cout << "Value: " << portfolioVal << " Min: " << min << endl;
+	//cout << "Subtract: " << portfolioVal-min << endl;
+	//cout << "Interval: " << interval << endl;
 	return floor( ( ((int) portfolioVal) - min ) / interval );
 }
 
@@ -274,6 +279,7 @@ Results Exchange::getFitness(int savingFact, double startMon)
 		//cout << "working..." << endl;
 
 		// Store result from startSim in array()
+//		cout << "Trial# " << count << endl;
 		data[count] = sim->startSim();
 		//cout << "Value stored: " << data[count].getTotalValue() << endl;
 		if (data[count].getTotalValue() < min_max.getMin()) { min_max.setMin(data[count].getTotalValue()); }
@@ -296,7 +302,7 @@ Results Exchange::getFitness(int savingFact, double startMon)
 	}
 	//sim.startSim(10,40);
 	double sum=0;
-	int min, max, interval, positionToIncrement; min=max=interval=0;
+	int min, max, interval, intervalPrice, positionToIncrement; min=max=interval=0;
 
 	// Processing for performance distribution
 //	cout << "Pre flooring " << min_max.getMin() << endl;
@@ -304,26 +310,25 @@ Results Exchange::getFitness(int savingFact, double startMon)
 	min = floor( ((int)min_max.getMin()) / 100 )*100;
 //	cout << "Min: " << min << endl;
 	max = ceil( (int)min_max.getMax()/100)*100 + 100;
-	cout << "Max: " << max << endl;
+	//cout << "Max: " << max << endl;
 	interval = (max - min)/40;
 
 	min_max.getAttributesForDistr()->setMin(min);
 	min_max.getAttributesForDistr()->setMax(max);
 	min_max.getAttributesForDistr()->setInterval(interval);
 
-	cout << "Interval: " << interval << endl;
+	//cout << "Interval: " << interval << endl;
 
 	// processing for stock price vs. perfomance relation
 	// NOTE : min, max, and interval for the price vs performance is denoted
 	// with the word "Price" appended to the variable name
-	cout << "------ Stock price vs Performance " << endl;
-	cout << "Min: " << minPrice << endl << "Max: " << maxPrice << endl;
-	minPrice = floor(minPrice/10)*10;
-	maxPrice = ceil(maxPrice/10)*10+10;
-	cout << "Min: " << minPrice << endl << "Max: " << maxPrice << endl;
-
-	intervalPrice = (maxPrice-minPrice)/40;
-	cout << "Interval: " << interval << endl;
+//	cout << "------ Stock price vs Performance " << endl;
+//	cout << "Min: " << minPrice << endl << "Max: " << maxPrice << endl;
+	minPrice = floor(minPrice/10)*10 - 10;
+	maxPrice = ceil(maxPrice/10)*10+50;
+//	cout << "Min: " << minPrice << endl << "Max: " << maxPrice << endl;
+	intervalPrice = (20+maxPrice-minPrice)/40;
+//	cout << "Interval: " << intervalPrice << endl << endl;
 	min_max.getAttributesForPerfVsPrice()->setMin(minPrice);
 	min_max.getAttributesForPerfVsPrice()->setMax(maxPrice);
 	min_max.getAttributesForPerfVsPrice()->setInterval(intervalPrice);
@@ -331,17 +336,21 @@ Results Exchange::getFitness(int savingFact, double startMon)
 	for (int j=0; j < getExp()->getNumTests(); j++ )
 	{
 
-		//cout << " " << data[j].getTotalValue() << endl;
+
+
 		// TODO
-		// Add logic to add in the performance
-
-
+		// Uncomment the increment distribution function !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		positionToIncrement = getCorrespondingPosition(data[j].getTotalValue(), interval, min);
 		//cout << "Postion to increment: " << positionToIncrement << endl;
 		min_max.incrementDistributionAt(positionToIncrement);
 
 		positionToIncrement = getCorrespondingPosition(data[j].getFinalPrice(), intervalPrice, minPrice);
-		min_max.addToPerfVsPrice(positionToIncrement, data[j].getTotalValue());
+		//cout << "Position to increment: " << positionToIncrement << endl;
+		if (positionToIncrement >= 40) { cout << "Error in getFitness() -- position to increment too high" << endl; }
+		else
+		{
+			min_max.addToPerfVsPrice(positionToIncrement, data[j].getTotalValue());
+		}
 		// TODO
 		// Write all of the stock lifecycles to a file by outputting each queue
 
@@ -355,45 +364,190 @@ Results Exchange::getFitness(int savingFact, double startMon)
 	//TODO
 	// update to subtract by the amount of starting money, getExp().getStartingMonies()
 	double fit = (sum/(double)getExp()->getNumTests() - startMon);
+
+
 	//TODO
 	// solve for a more intricate way of calculating the fitness score for perfomance
 	cout << "F: " << fit << endl;
-	min_max.setTotalVal(fit); // include fitness value into min_max
+	if (fit < 0) { fit = 1; }
+
+
+	// Distribution performance evalutation done by identifying which position in the list
+	// is the starting Monies range, and then summing the occurences of all performance
+	// values above the initial count.
+
+	int startCounting = getCorrespondingPosition(startMon, interval, min);
+	double sumOfOccurences = 0;
+	for (int k = startCounting; k < 40; k++)
+	{
+		sumOfOccurences+=min_max.getNumberOfOccurencesAt(k);
+	}
+
+	double distributionPerfFactor = (sumOfOccurences/(double)getExp()->getNumTests()); // score of 1 is the best
+
+	cout << "Distribution factor " << distributionPerfFactor << endl;
+
+	int numOfPerfomanceDependentRuns=0;;     // This takes into account how many times a bot performed well strongly because
+	int numOfHighPerformingUnderBadPrice=0;  // of the performance of the stock
+	int sizeOfList;
+	double range = min_max.getAttributesForPerfVsPrice()->getMin();
+	cout << "Range " << range << endl;
+	for (int p =0; p < 40; p++)
+	{
+			sizeOfList = min_max.getSizeOfListAt(p);
+			//	cout << "Size of List " << sizeOfList << endl;
+			if(sizeOfList != 0)
+			{
+				for (int i=0; i < sizeOfList; i++)
+				{
+				//	cout << "Current range: " << range << endl;
+					if (range < 1000) // min_max.getListAt_PositionAt(p,i)
+					{
+					//	cout << "Range below " << startMon << endl;
+					//	cout << "Ending value: " << min_max.getListAt_PositionAt(p,i)  << endl;
+						if(min_max.getListAt_PositionAt(p,i) >= startMon)
+						{	//cout << "Incrementing good performance under stress" << endl;
+							numOfHighPerformingUnderBadPrice++;
+						}
+					}
+					else if (range > 1300) // if the stock price exceeded 1300
+					{
+					//	cout << "Ending value: " << min_max.getListAt_PositionAt(p,i) << endl;
+						if(min_max.getListAt_PositionAt(p,i) > startMon)
+						{
+							numOfPerfomanceDependentRuns++;
+						}
+					}
+				}
+			}
+			range+=min_max.getAttributesForPerfVsPrice()->getInterval();
+	}
+cout << "At 2" << endl;
+	// a high value represents high dependence
+	double perfomanceDependenceFactor = (numOfPerfomanceDependentRuns/(double)getExp()->getNumTests());
+	cout << "At 2" << endl;
+	cout << "Perfomance dependent Factor: " << perfomanceDependenceFactor << endl;
+	perfomanceDependenceFactor-=(numOfHighPerformingUnderBadPrice/(double)getExp()->getNumTests())*(1.2);
+	cout << "High performance under pressure: " << numOfHighPerformingUnderBadPrice << endl;
+	double fitness = distributionPerfFactor - perfomanceDependenceFactor;
+
+	if (fitness <=0) { fitness = 0.00000009; } // if fitness is below 0, assign to very small value.
+	cout << "True fitness: " << fitness << endl;
+
+
+
+
+
+
+	min_max.setTotalVal(fitness); // include fitness value into min_max
 	//cout << "check if set " << min_max.getTotalValue() << endl;
 	data[getExp()->getNumTests()] = min_max;
 
+	//Results* datatemp[getExp()->getNumTests()];
+	//*datatemp = data;
+
+	//CSVExport(data, getExp()->getNumTests());
 
 
 	return min_max;
 }
 
-void Exchange::CSVExport(Results data[])
+/*
+void Exchange::CSVExport(Results data[], int size)
 {
 	// Gives us the number of elements of type Results in the array "data"
-	int numberOfTrials = sizeof(data) / sizeof(data[0]);
-	ofstream Data_File ("myStockSimulationData.csv");
-	Data_File << "Stock Final Price,Stock Total Value,Money,Assets,Savings,Number of Stocks, Minimum Performance, Maximum Performance";
-	for (int i = 1, i <= numberOfTrials, i++)
+
+	Node* temp = nullptr;
+	bool done = false;
+	cout << "Number of trials: " << size << endl;
+	ofstream Data_File;
+	Data_File.open("StockPriceLifeTimes.csv");
+	if (Data_File.is_open())
 	{
-		Data_File << ",Trial " + (i);
+		cout << "Reading file " << endl;
+	}
+	else
+	{
+		cout << "Error: could not read file " << endl;
+	}
+	Data_File << "Stock Final Price,Stock Total Value,Money,Assets,Savings,Number of Stocks, Minimum Performance, Maximum Performance";
+	for (int i = 1; i <= size; i++)
+	{
+		Data_File << ",Trial " << (i);
 	}
 
 	Data_File << "\n";
 
-	for (i = 0, i < numberOfTrials; i++)
+	for (int i = 0; i < size; i++)
 	{
-		Data_File << data[i].getFinalPrice() << "," << data[i].getTotalValue() << "," << data[i].getMoney() 
+		Data_File << data[i].getFinalPrice() << "," << data[i].getTotalValue() << "," << data[i].getMoney()
 		<< "," << data[i].getAssets() << "," << data[i].getSavings() << "," << data[i].getNumStocks() << ","
 		<< data[i].getMin() << "," << data[i].getMax();
 
-		if (!data[0].getLifeCycle().isEmpty())
+		if (!data[0].getLifeCycle()->isEmpty())
 		{
-			for (int j = 0, j < numberOfTrials; j++)
+			for (int j = 0; j < size; j++)
 			{
-
-				Data_File << "," << data[j].getLifeCycle().dequeue().getPrice();
+				temp = data[j].getLifeCycle()->dequeue();
+				Data_File << "," << temp->getPrice();
 			}
 		}
 		Data_File << "\n";
 	}
+
+	if (!data[0].getLifeCycle()->isEmpty())
+	{
+		while (!done)
+		{
+			Data_File << " " << "," << " " << "," << " "
+			<< "," << " "<< "," << " "<< "," << " " << ","
+			<< " " << "," << " ";
+			for (int j = 0; j < size; j++)
+			{
+				Data_File << "," << data[j].getLifeCycle()->dequeue()->getPrice();
+			}
+			Data_File << "\n";
+			if (data[0].getLifeCycle()->isEmpty() == true)
+			{
+				done = true;
+			}
+		}
+	}
+	Data_File.close();
+
+
+
+
+
+	  Now writing the Performance vs. Stock price data
+
+
+	Data_File.open("PerformanceVsPriceData.csv");
+	if (Data_File.is_open())
+	{
+		cout << "Reading file " << endl;
+	}
+	else
+	{
+		cout << "Error: could not read file " << endl;
+	}
+	cout << "Graph Perf-vs-Price attr: min - " << data[size].getAttributesForPerfVsPrice()->getMin() << " max - " << data[size].getAttributesForPerfVsPrice()->getMax() << " ";
+	cout << "interval - " << data[size].getAttributesForPerfVsPrice()->getInterval() << endl;
+	int range1 =data[size].getAttributesForPerfVsPrice()->getMin();
+
+	for (int k=0; k < 40; k++)
+	{
+		Data_File << range1 << "-";
+		range1+=data[size].getAttributesForPerfVsPrice()->getInterval();
+		Data_File << range1 << "";
+
+		for (int p=0; p < data[size].getSizeOfListAt(k); p++ )
+		{
+			Data_File << "," << data[size].getListAt_PositionAt(k,p);
+		}
+		Data_File << "\n";
+	}
+
+
 }
+*/

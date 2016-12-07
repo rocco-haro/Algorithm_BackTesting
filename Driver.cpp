@@ -3,6 +3,8 @@
  *
  *  Created on: Nov 20, 2016
  *      Author: rocco
+ g++ -std=c++0x Bot.cpp Driver.cpp Exchange.cpp ExperimentType.cpp fakeTime.cpp GenAlg.cpp GraphAttributes.cpp Individual.cpp LList.cpp Node.cpp Population.cpp Queue.cpp Results.cpp Stock.cpp -lpthread
+
  */
 
 #include "Driver.h"
@@ -30,22 +32,41 @@ int main()
 	// the type of moving averge 'D' (day) 'H' (hour) 'M' (min),
 	// and the number of experiments
 
-	Exchange* temp = new Exchange(10,40,'A',5);
+	Exchange* temp = new Exchange(10,40,'A',2);
 	Results data;
 	cout <<"Done .1.." << endl;
 
-	Population test;
+	GenAlg* solutionFinder = new GenAlg();
+	solutionFinder->runGA(10000,10);
+
+	 //Testing Population class
+/*
+	Population test(10000, 5);
 	test.generateGeneration0();
 	test.printPop();
+	test.runIndividualFitnessAlgorithm();
+	test.printPop();
 	Individual father = test.randomlySelectFromPop();
-	cout << "Father: " << father.getAttributeAt(0) << " sf " << father.getAttributeAt(2) ;
+	Individual mother = test.randomlySelectFromPop();
+	Individual child;
+	cout << "Father: " << "Mov1: " << father.getAttributeAt(0) << " Mov2: " << father.getAttributeAt(1) <<  " SF: " << father.getAttributeAt(2) << endl ;
+	cout << "Mother: " << "Mov1: " << mother.getAttributeAt(0) << " Mov2: " << mother.getAttributeAt(1)<<  " SF: " << mother.getAttributeAt(2) << endl ;
+	child = test.reproduce(father, mother);
+	cout << "Child: " << "Mov1: " << child.getAttributeAt(0) << " Mov2: " << child.getAttributeAt(1) << " SF: " << child.getAttributeAt(2) << endl ;
+	test.addChildToPos(0, child);
+	cout << "Adding child..." << endl;
+	test.printPop();
+	cout << "Testing fitness function" << endl;
+//	test.runIndividualFitnessAlgorithm();
 
+*/
+//	data = temp->getFitness(100,10000);
 	// Within each exchange, a series of different tests will be performed
 	// that will vary the savings Factor and the initial starting money
 
 	// Savings factor will vary from 2% to 50% of initial starting money
 	// whereas initial starting money will be either 10k, 50k, 100k, 500k
-//	data = temp->getFitness(200, 10000);
+	//data = temp->getFitness(200, 10000);
 	// TODO
 	// Keep track of the range of perfomance for those with high
 	// fitness values, update results.h with an int array that holds
@@ -82,25 +103,25 @@ int main()
 	*/
 //	cout << "+++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
 
-	/*
+/*
 	cout << "Graph Perf-vs-Price attr: min - " << data.getAttributesForPerfVsPrice()->getMin() << " max - " << data.getAttributesForPerfVsPrice()->getMax() << " ";
 	cout << "interval - " << data.getAttributesForPerfVsPrice()->getInterval() << endl;
 	int range1 =data.getAttributesForPerfVsPrice()->getMin();
 
 	for (int k=0; k < 40; k++)
 	{
-		cout << range1 << " - ";
+		//cout << range1 << " - ";
 		range1+=data.getAttributesForPerfVsPrice()->getInterval();
-		cout << range1 << " : ";
+		//cout << range1 << " : ";
 
 		for (int p=0; p < data.getSizeOfListAt(k); p++ )
 		{
-			cout << " " << data.getListAt_PositionAt(k,p) << " ";
+			//cout << " " << data.getListAt_PositionAt(k,p) << " ";
 		}
-		cout << endl;
+		//cout << endl;
 	}
+*/
 
-	*/
 
 
 
